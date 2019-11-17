@@ -27,7 +27,7 @@ public class RepsPresenter extends MvpPresenter<RepsView> {
         loadData();
     }
 
-    private void loadData() {
+    public void loadData() {
         getViewState().showLoading();
         client.getReps().subscribe(new SingleObserver<List<RepsModel>>() {
             @Override

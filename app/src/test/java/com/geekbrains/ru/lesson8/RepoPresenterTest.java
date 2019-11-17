@@ -5,7 +5,7 @@ import com.geekbrains.ru.lesson8.data.models.RepsModel;
 import com.geekbrains.ru.lesson8.data.rest.NetApiClientInterface;
 import com.geekbrains.ru.lesson8.presenter.RepsPresenter;
 import com.geekbrains.ru.lesson8.presenter.RepsView;
-import com.geekbrains.ru.lesson8.presenter.RepsView$$State;
+//import com.geekbrains.ru.lesson8.presenter.RepsView$$State;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,8 +29,8 @@ public class RepoPresenterTest {
 
     private RepsPresenter presenter;
 
-    @Mock
-    private RepsView$$State repsViewState;
+//    @Mock
+//    private RepsView$$State repsViewState;
     @Mock
     private RepsView view;
 
@@ -50,10 +50,33 @@ public class RepoPresenterTest {
         list.add(model);
         when(client.getReps()).thenReturn(Single.just(list));
         presenter.attachView(view);
-        presenter.setViewState(repsViewState);
+//        presenter.setViewState(repsViewState);
         verify(view).showLoading();
         verify(view).showRepoList(list);
         verify(view).hideLoading();
         verifyNoMoreInteractions(view);
+    }
+
+    @Test
+    public void testEmptyList() {
+        List<RepsModel> list = new ArrayList<>();
+        when(client.getReps()).thenReturn(Single.just(list));
+        presenter.attachView(view);
+        verify(view).showLoading();
+        verify(view).showEmptyState();
+        verify(view).hideLoading();
+        verifyNoMoreInteractions(view);
+    }
+
+    @Test
+    public void testLoadError() {
+        Throwable throwable = new Throwable();
+        when(client.getReps()).thenReturn(Single.error(throwable));
+        presenter.attachView(view);
+        verify(view).showLoading();
+        verify(view).showError(throwable);
+        verify(view).hideLoading();
+        verifyNoMoreInteractions(view);
+
     }
 }
